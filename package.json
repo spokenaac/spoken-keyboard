@@ -1,5 +1,5 @@
 {
-  "name": "@capacitor/keyboard",
+  "name": "spoken-keyboard",
   "version": "4.0.0-beta.0",
   "description": "The Keyboard API provides keyboard display and visibility control, along with event tracking when the keyboard shows and hides.",
   "main": "dist/plugin.cjs.js",
