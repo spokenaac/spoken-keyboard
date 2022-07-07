@@ -236,9 +236,49 @@ static IMP WKOriginalImp;
 
 - (void)setHideFormAccessoryBar:(BOOL)hideFormAccessoryBar
 {
-  if (hideFormAccessoryBar == _hideFormAccessoryBar) {
-    return;
+  //if (hideFormAccessoryBar == _hideFormAccessoryBar) {
+  //  return;
+  //}
+
+  /* Spoken Code Start */ 
+
+  NSLog(@"Hiding Accessory Bar %d", hideFormAccessoryBar);
+
+  // hide accessory bar items on ipad
+  self.webView.inputAssistantItem.trailingBarButtonGroups = [NSMutableArray new];
+  self.webView.inputAssistantItem.leadingBarButtonGroups = [NSMutableArray new];
+
+  IMP noSuggestionsImp = imp_implementationWithBlock(^(id _s) {
+      return UITextAutocorrectionTypeNo;
+  });
+  for (NSString* classString in @[@"WKContentView", @"UITextInputTraits"]) {
+      Class c = NSClassFromString(classString);
+      Method m = class_getInstanceMethod(c, @selector(autocorrectionType));
+      if (m != NULL) {
+          method_setImplementation(m, noSuggestionsImp);
+      } else {
+          class_addMethod(c, @selector(autocorrectionType), noSuggestionsImp, "l@:");
+      }
   }
+
+  IMP returnKeyImp = imp_implementationWithBlock(^(id _s) {
+      return UIReturnKeyDone;
+  });
+  for (NSString* classString in @[@"WKContentView", @"UITextInputTraits"]) {
+      Class c = NSClassFromString(classString);
+      Method m = class_getInstanceMethod(c, @selector(returnKeyType));
+      if (m != NULL) {
+          method_setImplementation(m, returnKeyImp);
+      } else {
+          class_addMethod(c, @selector(returnKeyType), returnKeyImp, "l@:");
+      }
+  }
+
+  NSString* UIClassString = [@[@"UI", @"Web", @"Browser", @"View"] componentsJoinedByString:@""];
+  NSString* WKClassString = [@[@"WK", @"Content", @"View"] componentsJoinedByString:@""];
+
+  /* Spoken Code End */
+  
   Method UIMethod = class_getInstanceMethod(NSClassFromString(UIClassString), @selector(inputAccessoryView));
   Method WKMethod = class_getInstanceMethod(NSClassFromString(WKClassString), @selector(inputAccessoryView));
   if (hideFormAccessoryBar) {
