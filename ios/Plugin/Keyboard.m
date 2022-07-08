@@ -61,12 +61,11 @@ NSString* UITraitsClassString;
   WKClassString = [@[@"WK", @"Content", @"View"] componentsJoinedByString:@""];
   UITraitsClassString = [@[@"UI", @"Text", @"Input", @"Traits"] componentsJoinedByString:@""];
 
-  PluginConfig * config = [self getConfig];
-  NSString * style = [config getString:@"style": nil];
+  NSString * style = [self getConfigValue:@"style"];
   [self changeKeyboardStyle:style.uppercaseString];
 
   self.keyboardResizes = ResizeNative;
-  NSString * resizeMode = [config getString:@"resize": nil];
+  NSString * resizeMode = [self getConfigValue:@"resize"];
 
   if ([resizeMode isEqualToString:@"none"]) {
     self.keyboardResizes = ResizeNone;
